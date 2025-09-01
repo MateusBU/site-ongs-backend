@@ -1,0 +1,7 @@
+// This file stores environment variables that should not be hardcoded in the source code.
+// Use it to keep sensitive data like API keys, database URLs, and configuration settings.
+// Never commit this file to version control (e.g., Git).
+
+module.exports = {
+    authSecret: ''
+}
