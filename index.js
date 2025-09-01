@@ -3,7 +3,9 @@ const consign = require('consign'); //Is a Node.js module that helps automatical
 
 consign()
     .then('./config/middlewares.js')
-    .into(app) //same name of ./config/middlewares (module.exporst)
+    .then('./api') //every folder from api is loaded by consign
+    .then('./config/routes.js')
+    .into(app); //same name of ./config/middlewares (module.exporst)
 
 
 //port 3000
