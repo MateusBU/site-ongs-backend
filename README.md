@@ -17,7 +17,7 @@ A aplicação é **full-stack**, utilizando:
 - **Frontend** em Vue.js  
 - **Backend** em Node.js com Express  
 - **Banco de Dados** PostgreSQL  
-- **Knex.js** como query builder
+- **Knex.js** serve para escrever consultas SQL (SELECT, INSERT, UPDATE, DELETE) usando JavaScript
 
 ---
 

@@ -3,5 +3,9 @@ module.exports = app =>{
         res.send('user save');
     }
 
-    return {save};
+    const get = (req, res) =>{
+        res.send('get user');
+    }
+
+    return {save, get};
 }

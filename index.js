@@ -1,5 +1,8 @@
 const app = require('express')()
 const consign = require('consign'); //Is a Node.js module that helps automatically load scripts (like routes, models, controllers, etc.) into Express app.
+const db = require('./config/db');
+
+app.db = db; //this db is knex (knex.js). Now it is possible to use get, post, delete,...
 
 consign()
     .then('./config/middlewares.js')
