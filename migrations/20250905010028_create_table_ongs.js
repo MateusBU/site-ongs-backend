@@ -5,10 +5,13 @@
 exports.up = function(knex) {
   return knex.schema.createTable('ongs', table =>{
     table.increments('id').primary();
+    
     table.string('name').notNullable();
-    table.string('number1');
-    table.string('number2');
+    table.string('number1'); //telefon
+    table.string('number2'); //phone
     table.string('description', 1000).notNullable();
+    table.string('logoOng', 1000);
+
     table.integer('userId').unsigned().notNullable()
       .references('id')
       .inTable('users')
@@ -21,5 +24,5 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-  
+  return knex.schema.dropTable('ongs');
 };

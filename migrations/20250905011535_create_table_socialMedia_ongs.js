@@ -3,18 +3,19 @@
  * @returns { Promise<void> }
  */
 exports.up = function(knex) {
-  return knex.schema.createTable('socialMedia', table =>{
+  return knex.schema.createTable('socialMediaOng', table =>{
     table.increments('id').primary();
-
-    table.integer('ongId').unsigned().notNullable()
-      .references('id')
-      .inTable('ongs')
-      .onDelete('CASCADE'); // if the ong is deleted, the social media is also deleted
 
     table.string('instagram');
     table.string('facebook');
     table.string('twitter');
     table.string('tiktok');
+    table.string('youtube');
+
+    table.integer('ongId').unsigned().notNullable()
+      .references('id')
+      .inTable('ongs')
+      .onDelete('CASCADE'); // if the ong is deleted, the social media is also deleted
   });     
 };
 
@@ -23,5 +24,5 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-  
+  return knex.schema.dropTable('socialMediaOng');
 };
