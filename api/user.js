@@ -1,6 +1,9 @@
 module.exports = app =>{
-    const save = (req, res) =>{
-        res.send('user save');
+    const save = async(req, res) =>{
+        const user = {...req.body}; //json on url
+
+        // res.send(`user save`);
+        res.send(user);
     }
 
     const get = (req, res) =>{

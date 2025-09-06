@@ -51,4 +51,37 @@ meu-projeto/
 └── README.md
 ```
 
+## Banco de Dados
+O projeto contém um banco de dados que armazena informações relacionadas a usuários e ONGs.
+
+Os usuários que desejam cadastrar uma ONG são armazenados na tabela `users`. Cada usuário pode cadastrar uma ou mais ONGs, que são registradas na tabela ``ongs``.
+
+As demais tabelas (`addressOng`, `imageOngs`, `socialMediaOng`) contêm dados complementares vinculados a cada ONG, como endereço, imagens e redes sociais
+
+                    Lista de de tabelas
+    Esquema |         Nome         |  Tipo  |   Dono
+    --------+----------------------+--------+----------
+    public  | addressOng           | tabela | postgres
+    public  | imageOngs            | tabela | postgres
+    public  | knex_migrations      | tabela | postgres
+    public  | knex_migrations_lock | tabela | postgres
+    public  | ongs                 | tabela | postgres
+    public  | socialMediaOng       | tabela | postgres
+    public  | users                | tabela | postgres
+
+### Validação dos Dados
+Este projeto inclui funções utilitárias para garantir que os dados recebidos dos usuários estejam corretos e seguros antes de serem processados ou armazenados.
+
+#### Funções de Validação
+As funções de validação cobrem:
+- Verificação de campos obrigatórios (existsOrError)
+- Comparação de valores (equalsOrError, notEqualsOrError)
+- Validação de formato de e-mail (isEmailOrError)
+- Regras de complexidade para senhas (passwordContainsCharacOrError), incluindo:
+  - Mínimo de 8 caracteres
+  - Presença de letras maiúsculas e minúsculas
+  - Números e caracteres especiais
+
+### Satinização dos Dados
+Usamos `DOMPurify` para sanitizar todos os campos do tipo string em objetos recebidos, removendo scripts e códigos maliciosos, além de aplicar trim() para limpar espaços em branco.
 ## Autor
