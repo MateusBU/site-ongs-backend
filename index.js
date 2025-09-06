@@ -6,6 +6,8 @@ app.db = db; //this db is knex (knex.js). Now it is possible to use get, post, d
 
 consign()
     .then('./config/middlewares.js')
+    .then('./api/validation.js')
+    .then('./api/sanitize.js')
     .then('./api') //every folder from api is loaded by consign
     .then('./config/routes.js')
     .into(app); //same name of ./config/middlewares (module.exporst)
