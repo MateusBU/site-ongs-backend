@@ -54,7 +54,7 @@ meu-projeto/
 ## Banco de Dados
 O projeto contém um banco de dados que armazena informações relacionadas a usuários e ONGs.
 
-Os usuários que desejam cadastrar uma ONG são armazenados na tabela `users`. Cada usuário pode cadastrar uma ou mais ONGs, que são registradas na tabela ``ongs``.
+Os usuários que desejam cadastrar uma ONG são armazenados na tabela `users`. Cada usuário pode cadastrar uma ou mais ONGs, que são registradas na tabela `ongs`.
 
 As demais tabelas (`addressOng`, `imageOngs`, `socialMediaOng`) contêm dados complementares vinculados a cada ONG, como endereço, imagens e redes sociais
 

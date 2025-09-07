@@ -42,7 +42,9 @@ module.exports = app =>{
 
             //db is a way to access knex
             const userFromDB = await app.db('users')
-                .where({email: user.email}).first();
+                .where({email: user.email})
+                .whereNull('deletedAt')
+                .first();
 
             // If this user already exists, prevent duplicate registration in the database
             if(!user.id){
@@ -92,9 +94,52 @@ module.exports = app =>{
         }
     }
 
+    //get all user of database
     const get = (req, res) =>{
-        res.send('get user');
+        app.db('users')
+            .select('id', 'name', 'email', 'admin')
+            .whereNull('deletedAt')
+            .then(users => res.json(users))
+            .catch(err => res.status(500).send(err));
     }
 
-    return {save, get};
+    //get user of database by his Id
+    const getById = (req, res) =>{
+        
+        const user = {...req.body}; //json on url
+        if(req.params.id) user.id = req.params.id
+
+        console.log(user.id);
+        app.db('users')
+            .select('id', 'name', 'email', 'admin')
+            .where({id: user.id})
+            .whereNull('deletedAt')
+            .then(users => res.json(users))
+            .catch(err => res.status(500).send(err, 'user not found'));
+    }
+
+    const remove = async(req, res) =>{
+        const user = {...req.body}; //json on url
+        if(req.params.id) user.id = req.params.id
+
+        try{
+
+            const userUpdated = await app.db('users')
+                .update({deletedAt: new Date()})
+                .where({id: user.id})
+
+            existsOrError(userUpdated, 'User not found');
+
+            const ongsDeleted = await app.db('ongs')
+                .where({userId: user.id})
+                .del();
+
+            res.status(204).send('User deleted');
+        }
+        catch(msg){
+            res.status(400).send(msg);
+        }
+    }
+
+    return {save, get, getById, remove};
 }
