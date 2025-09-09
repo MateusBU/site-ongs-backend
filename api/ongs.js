@@ -31,7 +31,7 @@ module.exports = app =>{
         if(ong.id){
             app.db('ongs')
                 .update(ong)
-                .where({id: article.id})
+                .where({id: ong.id})
                 .then(_ => res.status(204).send())
                 .catch(err => res.status(500).send(err));
         }

@@ -7,7 +7,11 @@ module.exports = app =>{
         if(req.params.id) imageOng.id = req.params.id;
     
         try{
-            existsOrError(imageOng.ongId, 'Ong is required');    
+            existsOrError(imageOng.ongId, 'Ong is required');  
+            
+            const ongFromDB = await app.db('ongs') //db is a way to access knex
+                .where({id: imageOng.ongId}).first();
+            existsOrError(ongFromDB, 'Ong does not exist');  
         }
         catch(msg){
             return res.status(400).send(msg);
@@ -71,5 +75,5 @@ module.exports = app =>{
             .catch(err => res.status(500).send(err));
     }
 
-    return{save, remove};
+    return{save, remove, getById};
 }

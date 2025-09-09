@@ -32,9 +32,9 @@ module.exports = app =>{
     app.route('/ongs/:id/imagesOng') //TODO fazer algo para retornar as imagens de cada ong, assim como o endereço?
         
         
-        /*--------------------------*/
-        //          IMAGES           //
-        /*--------------------------*/
+    /*--------------------------*/
+    //          IMAGES          //
+    /*--------------------------*/
         
     app.route('/imagesOng')
         .post(app.api.imageOng.save)
@@ -44,4 +44,16 @@ module.exports = app =>{
         .put(app.api.imageOng.save)
         .delete(app.api.imageOng.remove)
         
+
+    /*--------------------------*/
+    //          ADDRESS         //
+    /*--------------------------*/
+
+    app.route('/addressOng')
+        .post(app.api.addressOng.save)
+    
+    app.route('/addressOng/:id')
+        .get(app.api.addressOng.getById)
+        .put(app.api.addressOng.save)
+        .delete(app.api.addressOng.remove)
 }
