@@ -13,8 +13,10 @@ module.exports = app =>{
         const ong = sanitizeObject(req.body); //
         if(req.params.id) ong.id = req.params.id;
 
+        const maxLength = 100;
         try{
             existsOrError(ong.name, 'Name is required');
+            isSmallerThanOrError(ong.name, maxLength, `Name is too long. It must be smaller than ${maxLength}`);
             existsOrError(ong.description, 'Description is required');
             existsOrError(ong.userId, 'User is required');
 

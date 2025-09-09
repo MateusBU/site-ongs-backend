@@ -9,10 +9,10 @@ exports.up = function(knex) {
     table.string('image_url').notNullable();
     table.string('caption');
     
-        table.integer('ongId').unsigned().notNullable()
-          .references('id')
-          .inTable('ongs')
-          .onDelete('CASCADE');
+    table.integer('ongId').unsigned().notNullable()
+      .references('id')
+      .inTable('ongs')
+      .onDelete('CASCADE');
   });
 };
 

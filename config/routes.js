@@ -25,7 +25,23 @@ module.exports = app =>{
         .post(app.api.ongs.save)
 
     app.route('/ongs/:id')
+        .put(app.api.ongs.save)
         .delete(app.api.ongs.remove)
         .get(app.api.ongs.getById)
 
+    app.route('/ongs/:id/imagesOng') //TODO fazer algo para retornar as imagens de cada ong, assim como o endereço?
+        
+        
+        /*--------------------------*/
+        //          IMAGES           //
+        /*--------------------------*/
+        
+    app.route('/imagesOng')
+        .post(app.api.imageOng.save)
+        
+    app.route('/imagesOng/:id')
+        .get(app.api.imageOng.getById)
+        .put(app.api.imageOng.save)
+        .delete(app.api.imageOng.remove)
+        
 }
