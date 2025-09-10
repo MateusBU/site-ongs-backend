@@ -19,6 +19,7 @@ module.exports = app =>{
             isSmallerThanOrError(ong.name, maxLength, `Name is too long. It must be smaller than ${maxLength}`);
             existsOrError(ong.description, 'Description is required');
             existsOrError(ong.userId, 'User is required');
+            existsOrError(ong.helpedAnimals, 'It is required to have, at least, one kind of animal');
 
             const userFromDB = await app.db('users') //db is a way to access knex
                 .where({id: ong.userId}).first();

@@ -11,6 +11,7 @@ exports.up = function(knex) {
     table.string('number2'); //phone
     table.string('description', 1000).notNullable();
     table.string('logoOng', 1000);
+    table.specificType('helpedAnimals', 'text[]');
 
     table.integer('userId').unsigned().notNullable()
       .references('id')

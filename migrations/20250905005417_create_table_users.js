@@ -9,7 +9,6 @@ exports.up = function(knex) {
     table.string('email').notNullable().unique();
     table.string('password').notNullable()
     table.boolean('admin').notNullable().defaultTo(false);
-    table.timestamp('deletedAt');
   });
 };
 

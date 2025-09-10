@@ -40,12 +40,6 @@ module.exports = app =>{
             existsOrError(user.confirmPassword, 'Password confirmation is required');
             equalsOrError(user.password, user.confirmPassword, 'Passwords do not match');
 
-            //db is a way to access knex
-            const userFromDB = await app.db('users')
-                .where({email: user.email})
-                .whereNull('deletedAt')
-                .first();
-
             // If this user already exists, prevent duplicate registration in the database
             if(!user.id){
                 notExistsOrError(userFromDB, 'User already registered');
@@ -64,26 +58,9 @@ module.exports = app =>{
         // If successful, respond with status 204 (No Content); otherwise, return status 500 (Server Error)
         if(user.id){
             app.db('users')
+                .update(user)
                 .where({id: user.id})
-                .first()
-                .then(existingUser =>{
-                    //existingUser comes from my search (where)
-                    if(!existingUser){
-                        return res.status(404).send('User not found.');
-                    }
-
-                    const updatedUser = {...user};
-
-                    //If user was deleted, remove deletedAt (reactivate)
-                    if(existingUser.deletedAt){
-                        updatedUser.deletedAt = null;
-                    }
-
-                    return app.db('users')
-                        .update(updatedUser)
-                        .where({id: user.id})
-                        .then(_ => res.status(204).send())
-                })
+                .then(_ => res.status(204).send())
                 .catch(err => res.status(500).send(err));
         }
         else{
@@ -98,7 +75,6 @@ module.exports = app =>{
     const get = (req, res) =>{
         app.db('users')
             .select('id', 'name', 'email', 'admin')
-            .whereNull('deletedAt')
             .then(users => res.json(users))
             .catch(err => res.status(500).send(err));
     }
@@ -113,31 +89,29 @@ module.exports = app =>{
         app.db('users')
             .select('id', 'name', 'email', 'admin')
             .where({id: user.id})
-            .whereNull('deletedAt')
             .then(users => res.json(users))
             .catch(err => res.status(500).send(err, 'user not found'));
     }
 
     const remove = async(req, res) =>{
-        const user = {...req.body}; //json on url
-        if(req.params.id) user.id = req.params.id
-
         try{
+            const user = {...req.body};
+            if(req.params.id) user.id = req.params.id
 
-            const userUpdated = await app.db('users')
-                .update({deletedAt: new Date()})
-                .where({id: user.id})
-
-            existsOrError(userUpdated, 'User not found');
-
-            const ongsDeleted = await app.db('ongs')
-                .where({userId: user.id})
-                .del();
-
-            res.status(204).send('User deleted');
+            const usersDeleted = await app.db('users')
+                .where({id: user.id}).del()
+            
+            try{
+                existsOrError(usersDeleted, 'User not found')
+            }
+            catch(msg){
+                res.status(400).send(msg);
+                return;
+            }
+            res.status(204).send()
         }
         catch(msg){
-            res.status(400).send(msg);
+            res.status(500).send(msg);
         }
     }
 
