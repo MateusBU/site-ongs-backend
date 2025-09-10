@@ -56,4 +56,16 @@ module.exports = app =>{
         .get(app.api.addressOng.getById)
         .put(app.api.addressOng.save)
         .delete(app.api.addressOng.remove)
+
+    /*--------------------------*/
+    //      SOCIAL MEDIA        //
+    /*--------------------------*/
+
+    app.route('/socialMediaOng')
+        .post(app.api.socialMediaOng.save)
+    
+    app.route('/socialMediaOng/:id')
+        .get(app.api.socialMediaOng.getById)
+        .put(app.api.socialMediaOng.save)
+        .delete(app.api.socialMediaOng.remove)
 }

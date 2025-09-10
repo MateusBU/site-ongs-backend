@@ -60,9 +60,18 @@ module.exports = app =>{
     function isSmallerThanOrError(value, maxLength, msg){
         if(value.length > maxLength) throw msg;
     }
+
+    function isSocialMediaOrError(url, socialMediaString, msg){
+
+        const parsedUrl = new URL(url); // Parse a URL into an object with properties like protocol, hostname, path, etc
+        const hostname = parsedUrl.hostname.toLowerCase(); // Get the main domain (e.g., 'instagram.com') in lowercase for case-insensitive comparison
+
+        if(!hostname.includes(socialMediaString)) throw msg;
+    }
     
     return {existsOrError, notExistsOrError, equalsOrError, 
         notEqualsOrError, passwordContainsCharacOrError,
-        isSmallerThanOrError, isEmailOrError
+        isSmallerThanOrError, isEmailOrError,
+        isSocialMediaOrError
     }
 }
