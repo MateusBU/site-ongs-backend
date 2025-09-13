@@ -13,7 +13,7 @@ module.exports = app =>{
         const maxLength = 100;
         try{
             // Verify if all required fields are provided and valid
-            existsOrError(address.sate, 'State is required');
+            existsOrError(address.state, 'State is required');
             existsOrError(address.city, 'City is required');
 
             existsOrError(address.neighborhood, 'Neighborhood is required');

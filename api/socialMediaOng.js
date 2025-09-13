@@ -16,7 +16,7 @@ module.exports = app =>{
             existsOrError(socialMedia.ongId, 'Ong is required');
             isSocialMediaOrError(socialMedia.instagram, 'instagram.com', 'Not a properly Instagram url');
             isSocialMediaOrError(socialMedia.facebook, 'facebook.com', 'Not a properly Facebook url');
-            isSocialMediaOrError(socialMedia.twitter, 'twitter.com', 'Not a properly Twitter url');
+            isSocialMediaOrError(socialMedia.twitter, 'x.com', 'Not a properly Twitter/X url');
             isSocialMediaOrError(socialMedia.tiktok, 'tiktok.com', 'Not a properly Tiktok url');
             isSocialMediaOrError(socialMedia.youtube, 'youtube.com', 'Not a properly Youtube url');
 

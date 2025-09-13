@@ -40,14 +40,19 @@ module.exports = app =>{
             existsOrError(user.confirmPassword, 'Password confirmation is required');
             equalsOrError(user.password, user.confirmPassword, 'Passwords do not match');
 
+            const userFromDB = await app.db('users')
+                .where({email: user.email})
+                .first();
+
             // If this user already exists, prevent duplicate registration in the database
             if(!user.id){
                 notExistsOrError(userFromDB, 'User already registered');
-            }   
+            }
         }
         catch(msg){
             return res.status(400).send(msg);
         }
+
 
         // Hash the user's password before saving
         user.password = encryptPassword(user.password);

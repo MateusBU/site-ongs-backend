@@ -77,5 +77,12 @@ module.exports = app =>{
             .catch(err => res.status(500).send(err));
     }
 
-    return{save, remove, getById};
+    const get = (req, res) =>{
+        app.db('ongs')
+            .select('id', 'name', 'number1', 'number2', 'description', 'logoOng' ,'helpedAnimals', 'userId')
+            .then(users => res.json(users))
+            .catch(err => res.status(500).send(err));
+    }
+
+    return{save, remove, getById, get};
 };
