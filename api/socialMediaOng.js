@@ -77,6 +77,17 @@ module.exports = app =>{
             .catch(err => res.status(500).send(err));
     }
 
+    
+    const getSocialMediaByOng = (req, res) =>{
+        const ongId = req.params.id;
 
-    return{save, remove, getById};
+        app.db('socialMediaOng')
+            .where({ongId: ongId})
+            .first()
+            .then(socialMediaRes => res.json(socialMediaRes))
+            .catch(err => res.status(500).send(err));
+    }
+
+
+    return{save, remove, getById, getSocialMediaByOng};
 }
