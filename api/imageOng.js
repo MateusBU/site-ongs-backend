@@ -75,5 +75,15 @@ module.exports = app =>{
             .catch(err => res.status(500).send(err));
     }
 
-    return{save, remove, getById};
+    const getImagesByOng = (req, res) =>{
+        const ongId = req.params.id;
+
+        app.db('imageOngs')
+            .where({ongId: ongId})
+            .first()
+            .then(imgRes => res.json(imgRes))
+            .catch(err => res.status(500).send(err));
+    }
+
+    return{save, remove, getById, getImagesByOng};
 }

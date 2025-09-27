@@ -81,5 +81,14 @@ module.exports = app =>{
     }
 
 
-    return{save, remove, getById};
+    const getAddressesByOng = (req, res) =>{
+        const ongId = req.params.id;
+
+        app.db('addressOng')
+            .where({ongId: ongId})
+            .then(addressRes => res.json(addressRes))
+            .catch(err => res.status(500).send(err));
+    }
+
+    return{save, remove, getById, getAddressesByOng};
 }

@@ -45,7 +45,8 @@ module.exports = app =>{
         .put(app.api.imageOng.save)
         .delete(app.api.imageOng.remove)
         
-
+    app.route('/ongs/:id/imagesOng')
+        .get(app.api.imageOng.getImagesByOng)
     /*--------------------------*/
     //          ADDRESS         //
     /*--------------------------*/
@@ -58,6 +59,9 @@ module.exports = app =>{
         .put(app.api.addressOng.save)
         .delete(app.api.addressOng.remove)
 
+    app.route('/ongs/:id/addressesOng')
+        .get(app.api.addressOng.getAddressesByOng)
+        
     /*--------------------------*/
     //      SOCIAL MEDIA        //
     /*--------------------------*/
@@ -69,7 +73,6 @@ module.exports = app =>{
         .get(app.api.socialMediaOng.getById)
         .put(app.api.socialMediaOng.save)
         .delete(app.api.socialMediaOng.remove)
-
     
     app.route('/ongs/:id/socialMediaOng')
         .get(app.api.socialMediaOng.getSocialMediaByOng)
