@@ -77,11 +77,35 @@ module.exports = app =>{
             .catch(err => res.status(500).send(err));
     }
 
-    const get = (req, res) =>{
-        app.db('ongs')
-            .select('id', 'name', 'number1', 'number2', 'description', 'logoOng' ,'helpedAnimals', 'userId')
-            .then(users => res.json(users))
-            .catch(err => res.status(500).send(err));
+    const get = async (req, res) =>{
+
+        try{
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const offset = (page - 1) * limit;
+            
+            const result = await app.db('ongs')
+            .select('id', 'name', 'number1', 'number2', 'description', 'logoOng' ,'helpedAnimals')
+            .limit(limit)
+            .offset(offset);
+            
+            const [{count}] = await app.db('ongs').count('id as count');
+
+            console.log(result);
+            console.log(page);
+            console.log(limit);
+            console.log(offset);
+
+            res.json({
+                data: result,
+                total: parseInt(count),
+                page,
+                totalPages: Math.ceil(count / limit)
+            });
+        } 
+        catch (err) {
+            res.status(500).send(err)
+        }
     }
 
     return{save, remove, getById, get};
