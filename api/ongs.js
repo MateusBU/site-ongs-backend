@@ -83,19 +83,46 @@ module.exports = app =>{
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
             const offset = (page - 1) * limit;
-            
-            const result = await app.db('ongs')
-            .select('id', 'name', 'number1', 'number2', 'description', 'logoOng' ,'helpedAnimals')
-            .limit(limit)
-            .offset(offset);
-            
-            const [{count}] = await app.db('ongs').count('id as count');
 
-            console.log(result);
-            console.log(page);
-            console.log(limit);
-            console.log(offset);
+            // filters
+            const animals = req.query.animals ? req.query.animals.split(',').map(a => a.trim()) : [];
+            const cities = req.query.cities ? req.query.cities.split(',') : [];
 
+
+            let query = app.db('ongs')
+                .select('id', 'name', 'number1', 'number2', 'description', 'logoOng' ,'helpedAnimals')
+                .limit(limit)
+                .offset(offset);
+                
+                
+            // Filtering by animals
+            if (animals.length > 0) {
+                const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
+                query.whereRaw('"helpedAnimals" && ' + pgArray, animals);
+            }
+
+            // Filtering by cities
+            if (cities.length > 0) {
+                query.distinct('ongs.*')
+                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
+                    .whereIn('addressOng.city', cities);
+            }
+
+            const result = await query;
+            let countQuery1 = app.db('ongs').count('ongs.id as count')
+
+            if (animals.length > 0) {
+                const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
+                countQuery1.whereRaw('"helpedAnimals" && ' + pgArray, animals);
+            }
+
+            if (cities.length > 0) {
+                countQuery1.join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
+                    .whereIn('addressOng.city', cities);
+            }
+
+            const [{ count }] = await countQuery1;
+  
             res.json({
                 data: result,
                 total: parseInt(count),
@@ -104,6 +131,7 @@ module.exports = app =>{
             });
         } 
         catch (err) {
+            console.error('Erro na query:', err);
             res.status(500).send(err)
         }
     }

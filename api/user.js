@@ -90,7 +90,6 @@ module.exports = app =>{
         const user = {...req.body}; //json on url
         if(req.params.id) user.id = req.params.id
 
-        console.log(user.id);
         app.db('users')
             .select('id', 'name', 'email', 'admin')
             .where({id: user.id})
