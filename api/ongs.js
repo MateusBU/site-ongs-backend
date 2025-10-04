@@ -78,7 +78,6 @@ module.exports = app =>{
     }
 
     const get = async (req, res) =>{
-
         try{
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
@@ -86,55 +85,63 @@ module.exports = app =>{
 
             // filters
             const animals = req.query.animals ? req.query.animals.split(',').map(a => a.trim()) : [];
-            const cities = req.query.cities ? req.query.cities.split(',') : [];
+            const cities = req.query.cities ? req.query.cities.split(',').map(c => c.trim()) : [];
 
-
+            // Base query
             let query = app.db('ongs')
-                .select('id', 'name', 'number1', 'number2', 'description', 'logoOng' ,'helpedAnimals')
-                .limit(limit)
-                .offset(offset);
-                
-                
-            // Filtering by animals
-            if (animals.length > 0) {
-                const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
-                query.whereRaw('"helpedAnimals" && ' + pgArray, animals);
-            }
+            .select( 'ongs.id', 'ongs.name', 'ongs.number1', 'ongs.number2',
+                'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals');
 
             // Filtering by cities
             if (cities.length > 0) {
-                query.distinct('ongs.*')
-                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
-                    .whereIn('addressOng.city', cities);
+            query = query
+                .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
+                .whereIn('addressOng.city', cities)
+                .distinct('ongs.id', 'ongs.name', 'ongs.number1', 'ongs.number2', 'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals');
             }
 
-            const result = await query;
-            let countQuery1 = app.db('ongs').count('ongs.id as count')
-
+            // Filtering by animals
             if (animals.length > 0) {
-                const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
-                countQuery1.whereRaw('"helpedAnimals" && ' + pgArray, animals);
+            const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
+            query.whereRaw('"helpedAnimals" && ' + pgArray, animals);
             }
+
+            // Pagination
+            query.limit(limit).offset(offset);
+
+            // Run main query
+            const result = await query;
+
+            // Count query
+            let countQuery1 = app.db('ongs').countDistinct('ongs.id as count');
 
             if (cities.length > 0) {
-                countQuery1.join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
-                    .whereIn('addressOng.city', cities);
+            countQuery1
+                .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
+                .whereIn('addressOng.city', cities);
+            }
+
+            if (animals.length > 0) {
+            const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
+            countQuery1.whereRaw('"helpedAnimals" && ' + pgArray, animals);
             }
 
             const [{ count }] = await countQuery1;
-  
+
             res.json({
-                data: result,
-                total: parseInt(count),
-                page,
-                totalPages: Math.ceil(count / limit)
+            data: result,
+            total: parseInt(count, 10),
+            page,
+            totalPages: Math.ceil(count / limit)
             });
-        } 
+
+        }
         catch (err) {
             console.error('Erro na query:', err);
-            res.status(500).send(err)
+            res.status(500).send(err);
         }
-    }
+    };
+
 
     return{save, remove, getById, get};
 };
