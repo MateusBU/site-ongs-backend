@@ -86,24 +86,35 @@ module.exports = app =>{
             // filters
             const animals = req.query.animals ? req.query.animals.split(',').map(a => a.trim()) : [];
             const cities = req.query.cities ? req.query.cities.split(',').map(c => c.trim()) : [];
+            const state = req.query.state;
 
             // Base query
             let query = app.db('ongs')
             .select( 'ongs.id', 'ongs.name', 'ongs.number1', 'ongs.number2',
                 'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals');
 
+            console.log(state);
+
+            // Filtering by state
+            if (state.length) {
+                query = query
+                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
+                    .where('addressOng.state', state)
+                    .distinct('ongs.id', 'ongs.name', 'ongs.number1', 'ongs.number2', 'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals');
+            }
+
             // Filtering by cities
             if (cities.length > 0) {
-            query = query
-                .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
-                .whereIn('addressOng.city', cities)
-                .distinct('ongs.id', 'ongs.name', 'ongs.number1', 'ongs.number2', 'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals');
+                query = query
+                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
+                    .whereIn('addressOng.city', cities)
+                    .distinct('ongs.id', 'ongs.name', 'ongs.number1', 'ongs.number2', 'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals');
             }
 
             // Filtering by animals
             if (animals.length > 0) {
-            const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
-            query.whereRaw('"helpedAnimals" && ' + pgArray, animals);
+                const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
+                query.whereRaw('"helpedAnimals" && ' + pgArray, animals);
             }
 
             // Pagination
@@ -115,24 +126,30 @@ module.exports = app =>{
             // Count query
             let countQuery1 = app.db('ongs').countDistinct('ongs.id as count');
 
+            if (state.length) {
+                countQuery1
+                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
+                    .where('addressOng.state', state);
+            }
+
             if (cities.length > 0) {
-            countQuery1
-                .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
-                .whereIn('addressOng.city', cities);
+                countQuery1
+                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
+                    .whereIn('addressOng.city', cities);
             }
 
             if (animals.length > 0) {
-            const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
-            countQuery1.whereRaw('"helpedAnimals" && ' + pgArray, animals);
+                const pgArray = 'ARRAY[' + animals.map(() => '?').join(',') + ']';
+                countQuery1.whereRaw('"helpedAnimals" && ' + pgArray, animals);
             }
 
             const [{ count }] = await countQuery1;
 
             res.json({
-            data: result,
-            total: parseInt(count, 10),
-            page,
-            totalPages: Math.ceil(count / limit)
+                data: result,
+                total: parseInt(count, 10),
+                page,
+                totalPages: Math.ceil(count / limit)
             });
 
         }
