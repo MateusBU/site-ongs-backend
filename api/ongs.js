@@ -91,24 +91,22 @@ module.exports = app =>{
             // Base query
             let query = app.db('ongs')
             .select( 'ongs.id', 'ongs.name', 'ongs.number1', 'ongs.number2',
-                'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals');
+                'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals')
+            .distinct('ongs.id');
 
             console.log(state);
 
-            // Filtering by state
-            if (state.length) {
-                query = query
-                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
-                    .where('addressOng.state', state)
-                    .distinct('ongs.id', 'ongs.name', 'ongs.number1', 'ongs.number2', 'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals');
+            // Filtering by state and/or city
+            if (state?.length || cities.length > 0) {
+                query = query.join('addressOng', 'ongs.id', '=', 'addressOng.ongId');
             }
 
-            // Filtering by cities
+            if (state?.length) {
+                query.where('addressOng.state', state);
+            }
+
             if (cities.length > 0) {
-                query = query
-                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
-                    .whereIn('addressOng.city', cities)
-                    .distinct('ongs.id', 'ongs.name', 'ongs.number1', 'ongs.number2', 'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals');
+                query.whereIn('addressOng.city', cities);
             }
 
             // Filtering by animals
@@ -126,16 +124,16 @@ module.exports = app =>{
             // Count query
             let countQuery1 = app.db('ongs').countDistinct('ongs.id as count');
 
-            if (state.length) {
-                countQuery1
-                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
-                    .where('addressOng.state', state);
+            if (state?.length || cities.length > 0) {
+                countQuery1.join('addressOng', 'ongs.id', '=', 'addressOng.ongId');
+            }
+
+            if (state?.length) {
+                countQuery1.where('addressOng.state', state);
             }
 
             if (cities.length > 0) {
-                countQuery1
-                    .join('addressOng', 'ongs.id', '=', 'addressOng.ongId')
-                    .whereIn('addressOng.city', cities);
+                countQuery1.whereIn('addressOng.city', cities);
             }
 
             if (animals.length > 0) {
