@@ -2,6 +2,10 @@
 
 module.exports = app =>{
 
+    //public urls
+    app.post('/signin', app.api.auth.signin)
+    app.post('/validateToken', app.api.auth.validateToken)
+
     /*--------------------------*/
     //          USERS           //
     /*--------------------------*/
