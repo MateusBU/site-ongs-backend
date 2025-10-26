@@ -77,6 +77,17 @@ module.exports = app =>{
             .catch(err => res.status(500).send(err));
     }
 
+    const getByUserId = (req, res) =>{
+        const userId = req.params.userId
+
+        console.log(userId);
+
+        app.db('ongs')
+            .where({userId})
+            .then(ongRes => res.json(ongRes))
+            .catch(err => res.status(500).send(err));
+    }
+
     const get = async (req, res) =>{
         try{
             const page = parseInt(req.query.page) || 1;
@@ -158,5 +169,5 @@ module.exports = app =>{
     };
 
 
-    return{save, remove, getById, get};
+    return{save, remove, getById, get, getByUserId};
 };

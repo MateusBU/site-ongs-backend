@@ -36,7 +36,8 @@ module.exports = app =>{
 
     app.route('/ongs/:id/imagesOng') //TODO fazer algo para retornar as imagens de cada ong, assim como o endereço?
     
-        
+    app.route('/ongs/user/:userId')
+        .get(app.api.ongs.getByUserId) 
     /*--------------------------*/
     //          IMAGES          //
     /*--------------------------*/
