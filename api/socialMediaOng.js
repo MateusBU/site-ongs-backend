@@ -14,11 +14,21 @@ module.exports = app =>{
         try{
             // Verify if all required fields are provided and valid
             existsOrError(socialMedia.ongId, 'Ong is required');
-            isSocialMediaOrError(socialMedia.instagram, 'instagram.com', 'Not a properly Instagram url');
-            isSocialMediaOrError(socialMedia.facebook, 'facebook.com', 'Not a properly Facebook url');
-            isSocialMediaOrError(socialMedia.twitter, 'x.com', 'Not a properly Twitter/X url');
-            isSocialMediaOrError(socialMedia.tiktok, 'tiktok.com', 'Not a properly Tiktok url');
-            isSocialMediaOrError(socialMedia.youtube, 'youtube.com', 'Not a properly Youtube url');
+            if(socialMedia.instagram) {
+                isSocialMediaOrError(socialMedia.instagram, 'instagram.com', 'Not a properly Instagram url');
+            }
+            if(socialMedia.facebook) {
+                isSocialMediaOrError(socialMedia.facebook, 'facebook.com', 'Not a properly Facebook url');
+            }
+            if(socialMedia.twitter) {
+                isSocialMediaOrError(socialMedia.twitter, 'x.com', 'Not a properly Twitter/X url');
+            }
+            if(socialMedia.tiktok) {
+                isSocialMediaOrError(socialMedia.tiktok, 'tiktok.com', 'Not a properly Tiktok url');
+            }
+            if(socialMedia.youtube) {
+                isSocialMediaOrError(socialMedia.youtube, 'youtube.com', 'Not a properly Youtube url');
+            }
 
             const ongFromDB = await app.db('ongs') //db is a way to access knex
                 .where({id: socialMedia.ongId}).first();

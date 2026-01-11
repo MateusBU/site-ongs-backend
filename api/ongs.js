@@ -38,9 +38,16 @@ module.exports = app =>{
         }
         else{
             app.db('ongs')
-                .insert(ong)
-                .then(_ => res.status(204).send())
-                .catch(err => res.status(500).send(err));
+            .insert(ong)
+            .returning('id')
+            .then(result => {
+                const ongId = result[0].id
+                res.status(201).json({ id: ongId })
+            })
+            .catch(err => {
+                console.error(err)
+                res.status(500).send(err)
+            })
         }
     }
 
@@ -105,7 +112,6 @@ module.exports = app =>{
                 'ongs.description', 'ongs.logoOng', 'ongs.helpedAnimals')
             .distinct('ongs.id');
 
-            console.log(state);
 
             // Filtering by state and/or city
             if (state?.length || cities.length > 0) {

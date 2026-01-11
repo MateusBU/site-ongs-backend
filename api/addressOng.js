@@ -9,7 +9,6 @@ module.exports = app =>{
         const address = sanitizeObject(req.body);
         if(req.params.id) address.id = req.params.id;
 
-
         const maxLength = 100;
         try{
             // Verify if all required fields are provided and valid
